@@ -220,7 +220,7 @@ abstract class BoletoAbstract
      * @var Agente
      */
     protected $cedente;
-    
+
     /**
      * Entidade sacada (de quem se cobra o boleto)
      * @var Agente
@@ -1584,4 +1584,34 @@ abstract class BoletoAbstract
         }
         return $result;
     }
+
+    protected static function modulo_11($num, $base=9) {
+    $soma = 0;
+    $fator = 2;
+    for ($i = strlen($num); $i > 0; $i--) {
+        $numeros[$i] = substr($num,$i-1,1);
+        $parcial[$i] = $numeros[$i] * $fator;
+        $soma += $parcial[$i];
+        if ($fator == $base) {
+            $fator = 1;
+        }
+        $fator++;
+    }
+    $resto = $soma % 11;
+    return $resto;
+    }
+
+    protected static function digitoVerificador($numero) {
+        $resto = self::modulo_11($numero);
+         if ($resto == 10) {
+            $dv = 1;
+         } elseif ($resto == 1 OR $resto == 0) {
+            $dv = 0;
+         } else {
+            $digito = 11 - $resto;
+            $dv = $digito;
+         }
+         return $dv;
+    }
 }
+
